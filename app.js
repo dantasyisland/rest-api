@@ -3,6 +3,7 @@
 // load modules
 const express = require("express");
 const morgan = require("morgan");
+const { Sequelize } = require("sequelize");
 
 // variable to enable global error logging
 const enableGlobalErrorLogging =
@@ -13,6 +14,19 @@ const app = express();
 
 // setup morgan which gives us http request logging
 app.use(morgan("dev"));
+
+// setup Sequelize
+const db = require("./models/index");
+
+(async () => {
+  try {
+    await db.sequelize.authenticate();
+    await db.sequelize.sync();
+    console.log("successs");
+  } catch (error) {
+    console.error(error);
+  }
+})();
 
 // setup a friendly greeting for the root route
 app.get("/", (req, res) => {
