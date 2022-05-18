@@ -11,7 +11,7 @@ function asyncHandler(cb) {
 }
 
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await Course.findAll();
+  const users = await User.findAll();
   console.log(users.every((user) => user instanceof User));
   console.log("All users:", JSON.stringify(users, null, 2));
 });
