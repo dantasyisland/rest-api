@@ -17,6 +17,10 @@ app.use(morgan("dev"));
 
 // setup Sequelize
 const db = require("./models/index");
+const user = require("./models/user");
+
+// Routes
+const users = require("./routes/users");
 
 (async () => {
   try {
@@ -34,6 +38,8 @@ app.get("/", (req, res) => {
     message: "Welcome to the REST API project!",
   });
 });
+
+app.use("/api/users", users);
 
 // send 404 if no other route matched
 app.use((req, res) => {

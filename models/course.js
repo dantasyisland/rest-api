@@ -53,8 +53,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "User",
+      modelName: "Course",
     }
   );
+
+  // Add association to user model
+  Course.associate = (models) => {
+    Course.belongsTo(models.User, {
+      as: "user",
+      foreignKey: {
+        fieldName: "userId",
+        allowNull: false,
+      },
+    });
+  };
   return Course;
 };

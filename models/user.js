@@ -1,6 +1,6 @@
-const { Model } = require("sequelize");
+const { Model, Sequelize } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   class User extends Model {
     /**
      * Helper method for defining associations.
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   User.init(
     {
       firstName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       lastName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       emailAddress: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           isEmail: true,
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       password: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
@@ -54,5 +54,16 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+
+  // Association to course model
+  User.associate = (models) => {
+    User.hasMany(models.Course, {
+      as: "user",
+      foreignKey: {
+        fieldName: "userId",
+        allowNull: false,
+      },
+    });
+  };
   return User;
 };
