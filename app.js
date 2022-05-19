@@ -39,6 +39,7 @@ app.get("/", (req, res) => {
   });
 });
 
+// /API/Users - Routes
 app.use("/api/users", users);
 
 // send 404 if no other route matched
