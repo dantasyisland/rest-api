@@ -25,3 +25,18 @@ router.get(
     });
   })
 );
+
+router.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "user",
+        },
+      ],
+    });
+    res.json({ course });
+  })
+);
