@@ -29,7 +29,7 @@ exports.authenticateUser = async (req, res, next) => {
         console.log(
           `Authentication successful for username: ${user.emailAddress}`
         );
-        req.current;
+        req.currentUser = user;
       } else {
         message = `Authentication failure for username: ${user.emailAddress}`;
       }

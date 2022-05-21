@@ -6,9 +6,6 @@ const userController = require("../controllers/usersController");
 const { User, Course } = require("../models");
 
 const { authenticateUser } = require("../middleware/auth-user");
-const user = require("../models/user");
-
-module.exports = router;
 
 // Middleware will go here
 router.get(
@@ -16,6 +13,17 @@ router.get(
   authenticateUser,
   asyncHandler(async (req, res) => {
     const user = req.currentUser;
+    /**
+     * Add user courses
+     *
+     * const people = await Person.findAll({
+      include: [{
+        model: Movie,
+        as: 'director',
+      }],
+    });
+     */
+
     res.json({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -32,6 +40,7 @@ router.post(
     try {
       await User.create(req.body);
       res.status(201).json({ message: "Account successfully created" });
+      res.location("/");
     } catch (error) {
       console.error(error);
       if (
@@ -47,10 +56,4 @@ router.post(
   })
 );
 
-// router.get(
-//   "/",
-//   authenticateUser,
-//   asyncHandler(async (req, res) => {
-//     res.send("check log");
-//   })
-// );
+module.exports = router;

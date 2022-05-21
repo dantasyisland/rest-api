@@ -1,4 +1,5 @@
 const { Model, Sequelize } = require("sequelize");
+const bcrypt = require("bcrypt");
 
 module.exports = (sequelize) => {
   class User extends Model {
@@ -50,10 +51,8 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
         set(val) {
-          if (val === this.password) {
-            const hashedPassword = bcrypt.hashSync(val, 10);
-            this.setDataValue("password", hashedPassword);
-          }
+          const hashedPassword = bcrypt.hashSync(val, 10);
+          this.setDataValue("password", hashedPassword);
         },
         validate: {
           notNull: {
