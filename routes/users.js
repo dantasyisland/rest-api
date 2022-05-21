@@ -3,14 +3,54 @@ const router = express.Router();
 
 const { asyncHandler } = require("../middleware/async-handler");
 const userController = require("../controllers/usersController");
+const { User, Course } = require("../models");
+
+const { authenticateUser } = require("../middleware/auth-user");
+const user = require("../models/user");
 
 module.exports = router;
 
 // Middleware will go here
-router.get("/", (req, res) => {
-  const users = userController.getUsers();
+router.get(
+  "/",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    const user = req.currentUser;
+    res.json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      emailAddress: user.emailAddress,
+    });
+  })
+);
 
-  res.send("check log");
+router.post(
+  "/",
+  asyncHandler(async (req, res) => {
+    console.log("heuy");
+    console.dir(req.body);
+    try {
+      await User.create(req.body);
+      res.status(201).json({ message: "Account successfully created" });
+    } catch (error) {
+      console.error(error);
+      if (
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
+      ) {
+        const errors = error.errors.map((err) => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
+    }
+  })
+);
 
-  // res.json({});
-});
+// router.get(
+//   "/",
+//   authenticateUser,
+//   asyncHandler(async (req, res) => {
+//     res.send("check log");
+//   })
+// );

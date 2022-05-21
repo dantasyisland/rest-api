@@ -12,6 +12,8 @@ const enableGlobalErrorLogging =
 // create the Express app
 const app = express();
 
+app.use(express.json()); //Used to parse JSON bodies
+
 // setup morgan which gives us http request logging
 app.use(morgan("dev"));
 

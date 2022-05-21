@@ -17,8 +17,11 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
+          notNull: {
+            msg: "A name is required",
+          },
           notEmpty: {
-            msg: `"First Name" is required`,
+            msg: "Please provide a name",
           },
         },
       },
@@ -26,8 +29,11 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
+          notNull: {
+            msg: "A username is required",
+          },
           notEmpty: {
-            msg: `"Last Name" is required`,
+            msg: "Please provide a username",
           },
         },
       },
@@ -35,16 +41,26 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-          isEmail: true,
-          msg: "Please provide a valid email address",
+          isEmail: {
+            msg: "Please provide a valid email",
+          },
         },
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false,
+        set(val) {
+          if (val === this.password) {
+            const hashedPassword = bcrypt.hashSync(val, 10);
+            this.setDataValue("password", hashedPassword);
+          }
+        },
         validate: {
+          notNull: {
+            msg: "A password is required",
+          },
           notEmpty: {
-            msg: `"Password" is required`,
+            msg: "Please provide a password",
           },
         },
       },
