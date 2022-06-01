@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       estimatedTime: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           notEmpty: {
             msg: "Please enter an estimated time",
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       materialsNeeded: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           notEmpty: {
             msg: `Please enter the materials needed`,
