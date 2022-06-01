@@ -31,7 +31,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await Course.create(req.body);
-      res.status(201);
+      res.status(201).json({ message: "Account successfully created" });
       res.location("/");
     } catch (error) {
       console.error(error);
