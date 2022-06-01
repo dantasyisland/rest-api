@@ -35,8 +35,6 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    console.log("heuy");
-    console.dir(req.body);
     try {
       await User.create(req.body);
       res.status(201).json({ message: "Account successfully created" });
