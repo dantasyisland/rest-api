@@ -24,6 +24,7 @@ router.get(
     });
      */
 
+    userController.getUsers();
     res.json({
       firstName: user.firstName,
       lastName: user.lastName,

@@ -28,6 +28,7 @@ router.get(
 
 router.post(
   "/",
+  authenticateUser,
   asyncHandler(async (req, res) => {
     try {
       await Course.create(req.body);
@@ -48,6 +49,24 @@ router.post(
   })
 );
 
+// If User id matches Id in database
+
+router.put(
+  "/:id",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    try {
+      const course = await Course.findByPk(req.params.id);
+      if (course) {
+        console.log(course);
+        await course.update(req.body);
+      }
+      console.log(req.body);
+      res.sendStatus(204);
+    } catch (error) {}
+  })
+);
+
 router.get(
   "/:id",
   asyncHandler(async (req, res) => {
@@ -60,5 +79,18 @@ router.get(
       ],
     });
     res.json({ course });
+  })
+);
+
+router.delete(
+  "/:id",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    let course;
+    try {
+      course = await Course.findByPk(req.params.id);
+      await course.destroy();
+      res.sendStatus(204);
+    } catch {}
   })
 );
