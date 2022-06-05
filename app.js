@@ -25,6 +25,7 @@ const user = require("./models/user");
 const users = require("./routes/users");
 const courses = require("./routes/courses");
 
+// Test Database connection
 (async () => {
   try {
     await db.sequelize.authenticate();
@@ -45,7 +46,7 @@ app.get("/", (req, res) => {
 // /API/Users - Routes
 app.use("/api/users", users);
 
-// API /Courses Routes
+// API/Courses Routes
 app.use("/api/courses", courses);
 
 // send 404 if no other route matched

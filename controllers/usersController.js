@@ -10,6 +10,9 @@ function asyncHandler(cb) {
   };
 }
 
+// returns one user -
+const getUser = asyncHandler(async (req, res) => {});
+
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.findAll();
   console.log(users.every((user) => user instanceof User));

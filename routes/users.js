@@ -7,29 +7,13 @@ const { User, Course } = require("../models");
 
 const { authenticateUser } = require("../middleware/auth-user");
 
-// Middleware will go here
+// Returns 200 - Returns all properties for current user
 router.get(
   "/",
   authenticateUser,
   asyncHandler(async (req, res) => {
     const user = req.currentUser;
-    /**
-     * Add user courses
-     *
-     * const people = await Person.findAll({
-      include: [{
-        model: Movie,
-        as: 'director',
-      }],
-    });
-     */
-
-    userController.getUsers();
-    res.json({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      emailAddress: user.emailAddress,
-    });
+    res.status(200).json(req.currentUser);
   })
 );
 
@@ -38,8 +22,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
-      res.status(201).json({ message: "Account successfully created" });
-      res.location("/");
+      res.status(201).location("/");
     } catch (error) {
       console.error(error);
       if (
