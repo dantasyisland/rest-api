@@ -8,6 +8,7 @@ const { User, Course } = require("../models");
 
 const { authenticateUser } = require("../middleware/auth-user");
 
+// Can Chain Methods
 router.get(
   "/",
   asyncHandler(async (req, res) => {
