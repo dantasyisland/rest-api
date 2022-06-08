@@ -1,4 +1,5 @@
 const { Course, User } = require("../models/");
+const auth = require("basic-auth");
 
 function asyncHandler(cb) {
   return async (req, res, next) => {
@@ -59,23 +60,42 @@ const createCourse = asyncHandler(async (req, res) => {
 });
 
 const updateCourse = asyncHandler(async (req, res) => {
+  console.dir(req.params);
   try {
     const course = await Course.findByPk(req.params.id);
+    console.dir(course.userId);
     if (course) {
-      console.log(course);
-      await course.update(req.body);
+      if (course.userId === req.params.id) {
+        await course.update(req.body);
+        res.sendStatus(204);
+      } else {
+        res.sendStatus(401);
+      }
     }
-    console.log(req.body);
-    res.sendStatus(204);
   } catch (error) {}
 });
 
 const deleteCourse = asyncHandler(async (req, res) => {
+  let credentials = auth(req);
   let course;
   try {
-    course = await Course.findByPk(req.params.id);
-    await course.destroy();
-    res.sendStatus(204);
+    const course = await Course.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: { exclude: ["password"] },
+        },
+      ],
+    });
+    if (course) {
+      if (course.User.emailAddress === credentials.name) {
+        await course.destroy();
+        res.sendStatus(204);
+      } else {
+        res.sendStatus(401);
+      }
+    }
   } catch {}
 });
 
