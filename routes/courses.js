@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-module.exports = router;
-
 const { asyncHandler } = require("../middleware/async-handler");
-const { Course } = require("../models");
 
 const { authenticateUser } = require("../middleware/auth-user");
 const {
   getCourses,
   createCourse,
   updateCourse,
+  getCourse,
+  deleteCourse,
 } = require("../controllers/coursesController");
 
 // GET Route for Courses
@@ -20,34 +19,13 @@ router.get("/", getCourses);
 router.post("/", authenticateUser, createCourse);
 
 // PUT Route for Courses
-
 router.put("/:id", authenticateUser, updateCourse);
 
-router.get(
-  "/:id",
+// GET Route for Course
+router.get("/:id", getCourse);
 
-  asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          as: "user",
-        },
-      ],
-    });
-    res.json({ course });
-  })
-);
+// DELETE Route for Course
+router.delete("/:id", authenticateUser, deleteCourse);
 
-router.delete(
-  "/:id",
-  authenticateUser,
-  asyncHandler(async (req, res) => {
-    let course;
-    try {
-      course = await Course.findByPk(req.params.id);
-      await course.destroy();
-      res.sendStatus(204);
-    } catch {}
-  })
-);
+// Module Exports
+module.exports = router;

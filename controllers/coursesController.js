@@ -26,6 +26,19 @@ const getCourses = asyncHandler(async (req, res) => {
   });
 });
 
+const getCourse = asyncHandler(async (req, res) => {
+  const course = await Course.findByPk(req.params.id, {
+    include: [
+      {
+        model: User,
+        as: "user",
+        attributes: { exclude: ["password"] },
+      },
+    ],
+  });
+  res.json({ course });
+});
+
 const createCourse = asyncHandler(async (req, res) => {
   try {
     await Course.create(req.body);
@@ -57,4 +70,20 @@ const updateCourse = asyncHandler(async (req, res) => {
   } catch (error) {}
 });
 
-module.exports = { getCourses, createCourse, updateCourse };
+const deleteCourse = asyncHandler(async (req, res) => {
+  let course;
+  try {
+    course = await Course.findByPk(req.params.id);
+    await course.destroy();
+    res.sendStatus(204);
+  } catch {}
+});
+
+// Module Exports
+module.exports = {
+  getCourses,
+  createCourse,
+  updateCourse,
+  getCourse,
+  deleteCourse,
+};
