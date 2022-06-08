@@ -4,71 +4,28 @@ const router = express.Router();
 module.exports = router;
 
 const { asyncHandler } = require("../middleware/async-handler");
-const { User, Course } = require("../models");
+const { Course } = require("../models");
 
 const { authenticateUser } = require("../middleware/auth-user");
+const {
+  getCourses,
+  createCourse,
+  updateCourse,
+} = require("../controllers/coursesController");
 
-router.get(
-  "/",
-  asyncHandler(async (req, res) => {
-    const courses = await Course.findAll({
-      include: [
-        {
-          model: User,
-          as: "user",
-        },
-      ],
-    });
+// GET Route for Courses
+router.get("/", getCourses);
 
-    res.json({
-      courses,
-    });
-  })
-);
+// POST Route for Courses
+router.post("/", authenticateUser, createCourse);
 
-router.post(
-  "/",
-  authenticateUser,
-  asyncHandler(async (req, res) => {
-    try {
-      await Course.create(req.body);
-      res.status(201).json({ message: "Course successfully created" });
-      res.location("/");
-    } catch (error) {
-      console.error(error);
-      if (
-        error.name === "SequelizeValidationError" ||
-        error.name === "SequelizeUniqueConstraintError"
-      ) {
-        const errors = error.errors.map((err) => err.message);
-        res.status(400).json({ errors });
-      } else {
-        throw error;
-      }
-    }
-  })
-);
+// PUT Route for Courses
 
-// If User id matches Id in database
-
-router.put(
-  "/:id",
-  authenticateUser,
-  asyncHandler(async (req, res) => {
-    try {
-      const course = await Course.findByPk(req.params.id);
-      if (course) {
-        console.log(course);
-        await course.update(req.body);
-      }
-      console.log(req.body);
-      res.sendStatus(204);
-    } catch (error) {}
-  })
-);
+router.put("/:id", authenticateUser, updateCourse);
 
 router.get(
   "/:id",
+
   asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id, {
       include: [
