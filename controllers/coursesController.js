@@ -43,8 +43,7 @@ const getCourse = asyncHandler(async (req, res) => {
 const createCourse = asyncHandler(async (req, res) => {
   try {
     await Course.create(req.body);
-    res.status(201).json({ message: "Course successfully created" });
-    res.location("/");
+    res.status(201).location("/");
   } catch (error) {
     console.error(error);
     if (
