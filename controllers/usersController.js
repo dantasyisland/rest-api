@@ -1,31 +1,29 @@
 const { User } = require("../models/");
+const { asyncHandler } = require("../middleware/async-handler");
 
-function asyncHandler(cb) {
-  return async (req, res, next) => {
-    try {
-      await cb(req, res, next);
-    } catch (err) {
-      next(err);
-    }
-  };
-}
-
+// Will return current user if authenticated
 const getUser = asyncHandler(async (req, res) => {
-  const user = req.currentUser;
-
-  res.json({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    emailAddress: user.emailAddress,
-    id: user.id,
-  });
+  try {
+    const user = await User.findByPk(req.currentUser.id, {
+      attributes: {
+        exclude: ["password", "createdAt", "updatedAt"],
+      },
+    });
+    res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    const errors = error.errors.map((err) => err.message);
+    res.status(500).json({ errors });
+  }
 });
 
+// Will create a new user
 const createUser = asyncHandler(async (req, res) => {
   try {
     await User.create(req.body);
-    res.status(201).json({ message: "Account successfully created" });
-    res.location("/");
+    res.location("/").status(201).end();
   } catch (error) {
     console.error(error);
     if (

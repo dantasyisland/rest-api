@@ -1,23 +1,15 @@
 const { Course, User } = require("../models/");
 const auth = require("basic-auth");
-
-function asyncHandler(cb) {
-  return async (req, res, next) => {
-    try {
-      await cb(req, res, next);
-    } catch (err) {
-      next(err);
-    }
-  };
-}
+const { asyncHandler } = require("../middleware/async-handler");
 
 const getCourses = asyncHandler(async (req, res) => {
   const courses = await Course.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
     include: [
       {
         model: User,
         as: "user",
-        attributes: { exclude: ["password"] },
+        attributes: ["firstName", "lastName"],
       },
     ],
   });
@@ -37,7 +29,7 @@ const getCourse = asyncHandler(async (req, res) => {
       },
     ],
   });
-  res.json({ course });
+  res.status(200).json({ course });
 });
 
 const createCourse = asyncHandler(async (req, res) => {
