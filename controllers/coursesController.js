@@ -20,11 +20,12 @@ const getCourses = asyncHandler(async (req, res) => {
 
 const getCourse = asyncHandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id, {
+    attributes: { exclude: ["createdAt", "updatedAt"] },
     include: [
       {
         model: User,
         as: "user",
-        attributes: { exclude: ["password"] },
+        attributes: { exclude: ["password", "createdAt", "updatedAt"] },
       },
     ],
   });
@@ -32,9 +33,10 @@ const getCourse = asyncHandler(async (req, res) => {
 });
 
 const createCourse = asyncHandler(async (req, res) => {
+  let course;
   try {
-    await Course.create(req.body);
-    res.status(201).location("/");
+    course = await Course.create(req.body);
+    res.status(201).location(`/courses/${course.id}`).end();
   } catch (error) {
     console.error(error);
     if (
@@ -50,16 +52,14 @@ const createCourse = asyncHandler(async (req, res) => {
 });
 
 const updateCourse = asyncHandler(async (req, res) => {
-  console.dir(req.params);
   try {
     const course = await Course.findByPk(req.params.id);
-    console.dir(course.userId);
     if (course) {
-      if (course.userId === req.params.id) {
+      if (course.userId === req.body.userId) {
         await course.update(req.body);
         res.sendStatus(204);
       } else {
-        res.sendStatus(401);
+        res.sendStatus(403);
       }
     }
   } catch (error) {}
@@ -68,25 +68,27 @@ const updateCourse = asyncHandler(async (req, res) => {
 const deleteCourse = asyncHandler(async (req, res) => {
   let credentials = auth(req);
   let course;
+
   try {
-    const course = await Course.findByPk(req.params.id, {
+    course = await Course.findByPk(req.params.id, {
       include: [
         {
           model: User,
           as: "user",
-          attributes: { exclude: ["password"] },
         },
       ],
     });
     if (course) {
-      if (course.User.emailAddress === credentials.name) {
+      if (course.user.emailAddress === credentials.name) {
         await course.destroy();
         res.sendStatus(204);
       } else {
-        res.sendStatus(401);
+        res.sendStatus(403);
       }
+    } else {
+      res.sendStatus(404);
     }
-  } catch {}
+  } catch (error) {}
 });
 
 // Module Exports
