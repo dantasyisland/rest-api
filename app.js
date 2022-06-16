@@ -29,13 +29,13 @@ const courses = require("./routes/courses");
   try {
     await db.sequelize.authenticate();
     await db.sequelize.sync();
-    console.log("successs");
+    console.log("Successfully connected to database!");
   } catch (error) {
+    error.message = "Cannot connect to Database";
     console.error(error);
   }
 })();
 
-// setup a friendly greeting for the root route
 app.get("/", (req, res) => {
   res.json({
     message: "Welcome to the REST API project!",
