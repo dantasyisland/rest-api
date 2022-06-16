@@ -52,12 +52,18 @@ const createCourse = asyncHandler(async (req, res) => {
 });
 
 const updateCourse = asyncHandler(async (req, res) => {
+  let credentials = auth(req);
+  console.log(credentials.name);
+  console.log(req.body.id);
   try {
-    const course = await Course.findByPk(req.params.id);
+    const course = await Course.findByPk(req.body.id);
     if (course) {
-      if (course.userId === req.body.userId) {
-        await course.update(req.body);
-        res.sendStatus(204);
+      console.log("yes");
+      if (course.user.emailAddress === credentials.name) {
+        if (course.userId === req.body.Id) {
+          await course.update(req.body);
+          res.sendStatus(204);
+        }
       } else {
         res.sendStatus(403);
       }
