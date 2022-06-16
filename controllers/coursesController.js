@@ -51,22 +51,47 @@ const createCourse = asyncHandler(async (req, res) => {
   }
 });
 
+// const updateCourse = asyncHandler(async (req, res) => {
+//   let credentials = auth(req);
+//   console.log(credentials.name);
+//   console.log(req.body.id);
+//   try {
+//     const course = await Course.findByPk(req.body.id);
+//     if (course) {
+//       console.log("yes");
+//       console.log(course.user);
+//       if (course.user.emailAddress === credentials.name) {
+//         if (course.userId === req.body.Id) {
+//           await course.update(req.body);
+//           res.sendStatus(204);
+//         }
+//       } else {
+//         res.sendStatus(403);
+//       }
+//     }
+//   } catch (error) {}
+// });
+
 const updateCourse = asyncHandler(async (req, res) => {
+  let course;
   let credentials = auth(req);
-  console.log(credentials.name);
-  console.log(req.body.id);
+  console.log(credentials);
+  console.log(req.body);
+
   try {
-    const course = await Course.findByPk(req.body.id);
-    if (course) {
-      console.log("yes");
-      if (course.user.emailAddress === credentials.name) {
-        if (course.userId === req.body.Id) {
-          await course.update(req.body);
-          res.sendStatus(204);
-        }
-      } else {
-        res.sendStatus(403);
-      }
+    course = await Course.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "user",
+        },
+      ],
+    });
+    if (course.user.emailAddress === credentials.name) {
+      await course.update(req.body);
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(403);
     }
   } catch (error) {}
 });
