@@ -4,13 +4,6 @@ const auth = require("basic-auth");
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
 
-/**
- * Middleware to authenticate the request using Basic Authentication
- * @param {Request} req - Express request object.
- * @param {Response} res - Express response object.
- * @param {Function} next - The function to call to pass execution to the next middleware.
- */
-
 exports.authenticateUser = async (req, res, next) => {
   let message;
   const credentials = auth(req);
@@ -20,6 +13,7 @@ exports.authenticateUser = async (req, res, next) => {
       where: { emailAddress: credentials.name },
     });
     console.log(JSON.stringify(user, null, 2));
+
     if (user) {
       const authenticated = bcrypt.compareSync(credentials.pass, user.password);
 
@@ -40,7 +34,7 @@ exports.authenticateUser = async (req, res, next) => {
 
   if (message) {
     console.warn(message);
-    res.status(403).json({ message: "Access Denied" });
+    res.status(401).json({ message: "Access Denied" });
   } else {
     next();
   }

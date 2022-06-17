@@ -14,7 +14,7 @@ const app = express();
 
 app.use(express.json()); //Used to parse JSON bodies
 
-// setup morgan which gives us http request logging
+// setup morgan
 app.use(morgan("dev"));
 
 // setup Sequelize
@@ -25,6 +25,7 @@ const user = require("./models/user");
 const users = require("./routes/users");
 const courses = require("./routes/courses");
 
+// Test connection to database
 (async () => {
   try {
     await db.sequelize.authenticate();
@@ -42,10 +43,10 @@ app.get("/", (req, res) => {
   });
 });
 
-// /API/Users - Routes
+// /api/users routes
 app.use("/api/users", users);
 
-// API /Courses Routes
+// /api/courses routes
 app.use("/api/courses", courses);
 
 // send 404 if no other route matched

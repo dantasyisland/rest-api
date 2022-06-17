@@ -51,27 +51,6 @@ const createCourse = asyncHandler(async (req, res) => {
   }
 });
 
-// const updateCourse = asyncHandler(async (req, res) => {
-//   let credentials = auth(req);
-//   console.log(credentials.name);
-//   console.log(req.body.id);
-//   try {
-//     const course = await Course.findByPk(req.body.id);
-//     if (course) {
-//       console.log("yes");
-//       console.log(course.user);
-//       if (course.user.emailAddress === credentials.name) {
-//         if (course.userId === req.body.Id) {
-//           await course.update(req.body);
-//           res.sendStatus(204);
-//         }
-//       } else {
-//         res.sendStatus(403);
-//       }
-//     }
-//   } catch (error) {}
-// });
-
 const updateCourse = asyncHandler(async (req, res) => {
   let course;
   let credentials = auth(req);
@@ -93,7 +72,18 @@ const updateCourse = asyncHandler(async (req, res) => {
     } else {
       res.sendStatus(403);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errors = error.errors.map((err) => err.message);
+      res.status(403).json({ errors });
+    } else {
+      throw error;
+    }
+  }
 });
 
 const deleteCourse = asyncHandler(async (req, res) => {

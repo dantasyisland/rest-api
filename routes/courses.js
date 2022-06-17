@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const { asyncHandler } = require("../middleware/async-handler");
-
 const { authenticateUser } = require("../middleware/auth-user");
 const {
   getCourses,
