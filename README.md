@@ -2,7 +2,7 @@
 
 This is a REST API to access a courses database.
 
-To use run `npm install` then `npm start`
+To use run `npm install` then `npm start`. If you'd like nodemon running use `npm dev`
 
 Runs on localhost:5000
 
