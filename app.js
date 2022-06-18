@@ -21,10 +21,6 @@ app.use(morgan("dev"));
 const db = require("./models/index");
 const user = require("./models/user");
 
-// Routes
-const users = require("./routes/users");
-const courses = require("./routes/courses");
-
 // Test connection to database
 (async () => {
   try {
@@ -36,6 +32,10 @@ const courses = require("./routes/courses");
     console.error(error);
   }
 })();
+
+// Routes
+const users = require("./routes/users");
+const courses = require("./routes/courses");
 
 app.get("/", (req, res) => {
   res.json({
@@ -68,10 +68,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// set our port
+// set port to 5000
 app.set("port", process.env.PORT || 5000);
 
-// start listening on our port
+// listen on port
 const server = app.listen(app.get("port"), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
 });

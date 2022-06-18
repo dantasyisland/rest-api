@@ -2,6 +2,7 @@ const { Course, User } = require("../models/");
 const auth = require("basic-auth");
 const { asyncHandler } = require("../middleware/async-handler");
 
+// Will Get Courses and user associate with each course
 const getCourses = asyncHandler(async (req, res) => {
   const courses = await Course.findAll({
     attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -18,6 +19,7 @@ const getCourses = asyncHandler(async (req, res) => {
   });
 });
 
+// Will get one individual course
 const getCourse = asyncHandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id, {
     attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -32,6 +34,7 @@ const getCourse = asyncHandler(async (req, res) => {
   res.status(200).json({ course });
 });
 
+// Creates a new course - will handle sequelize validation errors
 const createCourse = asyncHandler(async (req, res) => {
   let course;
   try {
@@ -51,11 +54,10 @@ const createCourse = asyncHandler(async (req, res) => {
   }
 });
 
+// Updates course if user is authenticated - will handle sequelize validation errors
 const updateCourse = asyncHandler(async (req, res) => {
-  let course;
   let credentials = auth(req);
-  console.log(credentials);
-  console.log(req.body);
+  let course;
 
   try {
     course = await Course.findByPk(req.params.id, {
@@ -86,6 +88,7 @@ const updateCourse = asyncHandler(async (req, res) => {
   }
 });
 
+// Will delete course if user is authenticated
 const deleteCourse = asyncHandler(async (req, res) => {
   let credentials = auth(req);
   let course;

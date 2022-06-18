@@ -4,7 +4,7 @@ const router = express.Router();
 const { authenticateUser } = require("../middleware/auth-user");
 const { getUser, createUser } = require("../controllers/usersController");
 
-// GET Route For Users
+// GET Route For Users - protected
 router.get("/", authenticateUser, getUser);
 
 // POST Route For Users
