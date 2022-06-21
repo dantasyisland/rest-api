@@ -78,7 +78,7 @@ const updateCourse = asyncHandler(async (req, res) => {
       await course.update(req.body);
       res.sendStatus(204);
     } else {
-      res.sendStatus(403);
+      res.status(403).json();
     }
   } catch (error) {
     console.error(error);
@@ -87,7 +87,7 @@ const updateCourse = asyncHandler(async (req, res) => {
       error.name === "SequelizeUniqueConstraintError"
     ) {
       const errors = error.errors.map((err) => err.message);
-      res.status(403).json({ errors });
+      res.status(400).json({ errors });
     } else {
       throw error;
     }
@@ -113,12 +113,15 @@ const deleteCourse = asyncHandler(async (req, res) => {
         await course.destroy();
         res.sendStatus(204);
       } else {
-        res.sendStatus(403);
+        res.status(403).json();
       }
     } else {
-      res.sendStatus(404);
+      res.status(404).json();
     }
-  } catch (error) {}
+  } catch (error) {
+    const errors = error.errors.map((err) => err.message);
+    res.status(400).json({ errors });
+  }
 });
 
 // Module Exports
