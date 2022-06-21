@@ -5,7 +5,9 @@ const { asyncHandler } = require("../middleware/async-handler");
 // Will Get Courses and user associate with each course
 const getCourses = asyncHandler(async (req, res) => {
   const courses = await Course.findAll({
-    attributes: { exclude: ["createdAt", "updatedAt"] },
+    attributes: {
+      exclude: ["createdAt", "updatedAt"],
+    },
     include: [
       {
         model: User,
@@ -22,12 +24,16 @@ const getCourses = asyncHandler(async (req, res) => {
 // Will get one individual course
 const getCourse = asyncHandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id, {
-    attributes: { exclude: ["createdAt", "updatedAt"] },
+    attributes: {
+      exclude: ["createdAt", "updatedAt"],
+    },
     include: [
       {
         model: User,
         as: "user",
-        attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+        attributes: {
+          exclude: ["password", "createdAt", "updatedAt"],
+        },
       },
     ],
   });

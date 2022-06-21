@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const sqlite3 = require('sqlite3');
+const sqlite3 = require("sqlite3");
 
 class Context {
   constructor(filename, enableLogging) {
@@ -9,13 +9,13 @@ class Context {
   }
 
   static prepareQuery(text) {
-    return text
-      .replace(/\s+/g, ' ')
-      .trim();
+    return text.replace(/\s+/g, " ").trim();
   }
 
   static log(text, params) {
-    console.info(`Running query: "${text}", with params: ${JSON.stringify(params)}`);
+    console.info(
+      `Running query: "${text}", with params: ${JSON.stringify(params)}`
+    );
   }
 
   execute(text, ...params) {
@@ -61,7 +61,7 @@ class Context {
       if (data.length === 1) {
         [record] = data;
       } else if (data.length > 1) {
-        throw new Error('Unexpected number of rows encountered.');
+        throw new Error("Unexpected number of rows encountered.");
       }
     }
     return record;
@@ -77,10 +77,10 @@ class Context {
       if (keys.length === 1) {
         value = record[keys[0]];
       } else {
-        throw new Error('Unexpected number of values encountered.');
+        throw new Error("Unexpected number of values encountered.");
       }
     } else {
-      throw new Error('Unexpected number of rows encountered.');
+      throw new Error("Unexpected number of rows encountered.");
     }
     return value;
   }
